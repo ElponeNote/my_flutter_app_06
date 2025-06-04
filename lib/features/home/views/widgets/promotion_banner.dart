@@ -67,7 +67,7 @@ class _PromotionBannerState extends State<PromotionBanner> {
                             Text(
                               promo.subtitle,
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
+                                color: Colors.white.withAlpha((255 * 0.9).toInt()),
                                 fontSize: 14,
                               ),
                             ),

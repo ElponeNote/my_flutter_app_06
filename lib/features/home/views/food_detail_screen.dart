@@ -4,6 +4,7 @@ import 'widgets/food_recommendation_section.dart';
 import 'package:provider/provider.dart';
 import '../../cart/view_models/cart_provider.dart';
 import '../../cart/views/cart_screen.dart';
+import '../view_models/food_detail_view_model.dart';
 
 class FoodDetailScreen extends StatelessWidget {
   final FoodItem food;
@@ -11,6 +12,20 @@ class FoodDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => FoodDetailViewModel(food: food),
+      child: const _FoodDetailView(),
+    );
+  }
+}
+
+class _FoodDetailView extends StatelessWidget {
+  const _FoodDetailView();
+
+  @override
+  Widget build(BuildContext context) {
+    final vm = context.watch<FoodDetailViewModel>();
+    final food = vm.food;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -118,7 +133,7 @@ class FoodDetailScreen extends StatelessWidget {
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  builder: (_) => _CartModal(food: food),
+                  builder: (_) => const _CartModal(),
                 );
               },
             ),
@@ -129,34 +144,14 @@ class FoodDetailScreen extends StatelessWidget {
   }
 }
 
-class _CartModal extends StatefulWidget {
-  final FoodItem food;
-  const _CartModal({required this.food});
-
-  @override
-  State<_CartModal> createState() => _CartModalState();
-}
-
-class _CartModalState extends State<_CartModal> {
-  int _quantity = 1;
-
-  void _increment() {
-    setState(() {
-      _quantity++;
-    });
-  }
-
-  void _decrement() {
-    if (_quantity > 1) {
-      setState(() {
-        _quantity--;
-      });
-    }
-  }
+class _CartModal extends StatelessWidget {
+  const _CartModal();
 
   @override
   Widget build(BuildContext context) {
-    final total = widget.food.price * _quantity;
+    final vm = context.watch<FoodDetailViewModel>();
+    final food = vm.food;
+    final cart = context.read<CartProvider>();
     return DraggableScrollableSheet(
       initialChildSize: 0.38,
       minChildSize: 0.2,
@@ -194,7 +189,7 @@ class _CartModalState extends State<_CartModal> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      widget.food.imageUrl,
+                      food.imageUrl,
                       width: 60,
                       height: 60,
                       fit: BoxFit.cover,
@@ -205,9 +200,9 @@ class _CartModalState extends State<_CartModal> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.food.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        Text(food.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                         SizedBox(height: 6),
-                        Text('${widget.food.price.toStringAsFixed(0)}원', style: TextStyle(color: Color(0xFF5B5BFF), fontWeight: FontWeight.w600, fontSize: 16)),
+                        Text('${food.price.toStringAsFixed(0)}원', style: TextStyle(color: Color(0xFF5B5BFF), fontWeight: FontWeight.w600, fontSize: 16)),
                       ],
                     ),
                   ),
@@ -222,17 +217,17 @@ class _CartModalState extends State<_CartModal> {
                     children: [
                       CupertinoButton(
                         padding: EdgeInsets.zero,
-                        minSize: 32,
-                        onPressed: _decrement,
+                        minimumSize: const Size(32, 32),
+                        onPressed: vm.decrement,
                         child: Icon(CupertinoIcons.minus_circle, color: Colors.grey, size: 28),
                       ),
                       SizedBox(width: 8),
-                      Text('$_quantity', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text('${vm.quantity}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       SizedBox(width: 8),
                       CupertinoButton(
                         padding: EdgeInsets.zero,
-                        minSize: 32,
-                        onPressed: _increment,
+                        minimumSize: const Size(32, 32),
+                        onPressed: vm.increment,
                         child: Icon(CupertinoIcons.plus_circle, color: Color(0xFF5B5BFF), size: 28),
                       ),
                     ],
@@ -244,7 +239,7 @@ class _CartModalState extends State<_CartModal> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('총액', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  Text('${total.toStringAsFixed(0)}원', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF5B5BFF))),
+                  Text('${vm.total.toStringAsFixed(0)}원', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF5B5BFF))),
                 ],
               ),
               SizedBox(height: 18),
@@ -256,8 +251,7 @@ class _CartModalState extends State<_CartModal> {
                   borderRadius: BorderRadius.circular(12),
                   child: Text('주문하기', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
                   onPressed: () async {
-                    // 장바구니에 추가
-                    context.read<CartProvider>().addItem(widget.food, quantity: _quantity);
+                    vm.addToCart(cart);
                     await showCupertinoDialog(
                       context: context,
                       builder: (context) => CupertinoAlertDialog(

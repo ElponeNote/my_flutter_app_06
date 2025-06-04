@@ -37,7 +37,7 @@ class TagFilterSection extends StatelessWidget {
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: Color(0xFF5B5BFF).withOpacity(0.12),
+                          color: Color(0xFF5B5BFF).withAlpha((255 * 0.12).toInt()),
                           blurRadius: 8,
                           offset: Offset(0, 2),
                         ),

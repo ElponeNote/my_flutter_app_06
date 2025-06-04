@@ -5,7 +5,7 @@ import '../../../cart/view_models/cart_provider.dart';
 import '../../../cart/views/cart_screen.dart';
 
 class HomeAppBar extends StatelessWidget {
-  const HomeAppBar({Key? key}) : super(key: key);
+  const HomeAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {

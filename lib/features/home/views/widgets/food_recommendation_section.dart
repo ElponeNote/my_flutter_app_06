@@ -30,7 +30,7 @@ class FoodRecommendationSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: CupertinoColors.systemGrey4.withOpacity(0.18),
+                  color: CupertinoColors.systemGrey4.withAlpha((255 * 0.18).toInt()),
                   blurRadius: 10,
                   offset: Offset(0, 4),
                 ),
@@ -67,6 +67,7 @@ class FoodRecommendationSection extends StatelessWidget {
                           Text(
                             '${food.price.toStringAsFixed(0)}원',
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF5B5BFF)),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
@@ -74,6 +75,8 @@ class FoodRecommendationSection extends StatelessWidget {
                       Text(
                         food.name,
                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 6),
                       Wrap(

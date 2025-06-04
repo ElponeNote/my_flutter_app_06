@@ -58,7 +58,7 @@ class CartScreen extends StatelessWidget {
                           children: [
                             CupertinoButton(
                               padding: EdgeInsets.zero,
-                              minSize: 28,
+                              minimumSize: const Size(28, 28),
                               onPressed: () {
                                 if (item.quantity > 1) {
                                   cart.updateQuantity(item.food, item.quantity - 1);
@@ -71,7 +71,7 @@ class CartScreen extends StatelessWidget {
                             SizedBox(width: 6),
                             CupertinoButton(
                               padding: EdgeInsets.zero,
-                              minSize: 28,
+                              minimumSize: const Size(28, 28),
                               onPressed: () {
                                 cart.updateQuantity(item.food, item.quantity + 1);
                               },
