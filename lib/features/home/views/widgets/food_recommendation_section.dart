@@ -47,6 +47,12 @@ class FoodRecommendationSection extends StatelessWidget {
                       width: 90,
                       height: 90,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 90,
+                        height: 90,
+                        color: Colors.grey[200],
+                        child: Icon(Icons.broken_image, color: Colors.grey, size: 40),
+                      ),
                     ),
                   ),
                 ),
@@ -120,4 +126,10 @@ class FoodItem {
     required this.price,
     required this.tags,
   });
+}
+
+class FoodOption {
+  final String name;
+  final int price;
+  const FoodOption({required this.name, required this.price});
 } 

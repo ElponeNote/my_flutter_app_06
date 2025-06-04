@@ -26,7 +26,7 @@ class HomeViewModel extends ChangeNotifier {
     ),
     FoodItem(
       name: '불고기버거',
-      imageUrl: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&q=80',
       rating: 4.6,
       price: 7200,
       tags: ['추천', '버거'],
@@ -40,7 +40,7 @@ class HomeViewModel extends ChangeNotifier {
     ),
     FoodItem(
       name: '아메리카노',
-      imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=400&q=80',
       rating: 4.9,
       price: 3500,
       tags: ['카페', '디저트'],
@@ -54,6 +54,17 @@ class HomeViewModel extends ChangeNotifier {
   List<FoodItem> get foods => _foods;
   String get selectedCategory => _selectedCategory;
   String get selectedTag => _selectedTag;
+
+  // 태그별 음식 필터링
+  List<FoodItem> get filteredFoods => _selectedTag == '추천'
+      ? _foods
+      : _foods.where((f) => f.tags.contains(_selectedTag)).toList();
+
+  // 음식명 기준 실시간 검색
+  List<FoodItem> searchFoods(String query) {
+    if (query.isEmpty) return [];
+    return _foods.where((f) => f.name.contains(query)).toList();
+  }
 
   void selectCategory(String key) {
     _selectedCategory = key;

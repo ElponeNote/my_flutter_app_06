@@ -3,46 +3,58 @@ import 'package:provider/provider.dart';
 import 'features/cart/view_models/cart_provider.dart';
 import 'features/home/view_models/home_view_model.dart';
 import 'features/home/views/home_screen.dart';
+import 'features/auth/view_models/auth_view_model.dart';
+import 'features/auth/views/signup_screen.dart';
+import 'features/auth/views/login_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => HomeViewModel()),
-      ],
-      child: const MyApp(),
-    ),
+  KakaoSdk.init(
+    nativeAppKey: '여기에_본인의_네이티브_앱키_입력', // 반드시 본인의 앱키로 교체!
+    javaScriptAppKey: '여기에_본인의_자바스크립트_앱키_입력', // (웹 연동 시, 선택)
   );
+  runApp(const MyApp());
 }
+
+final _router = GoRouter(
+  routes: [
+    // GoRoute(
+    //   path: '/signup',
+    //   builder: (context, state) => const SignupScreen(),
+    // ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/home',
+      builder: (context, state) => const HomeScreen(),
+    ),
+    // TODO: 홈, 로그인 등 다른 경로 추가
+  ],
+  initialLocation: '/home',
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: _router,
+        title: 'EatEasy',
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
       ),
-      home: const HomeScreen(),
     );
   }
 }

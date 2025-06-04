@@ -7,23 +7,27 @@ class CartProvider extends ChangeNotifier {
 
   List<CartItem> get items => List.unmodifiable(_items);
 
-  void addItem(FoodItem food, {int quantity = 1}) {
-    final index = _items.indexWhere((item) => item.food.name == food.name);
+  void addItem(FoodItem food, {int quantity = 1, FoodOption? option, String? memo}) {
+    final index = _items.indexWhere((item) =>
+      item.food.name == food.name &&
+      item.option?.name == option?.name &&
+      (item.memo ?? '') == (memo ?? '')
+    );
     if (index >= 0) {
       _items[index].quantity += quantity;
     } else {
-      _items.add(CartItem(food: food, quantity: quantity));
+      _items.add(CartItem(food: food, quantity: quantity, option: option, memo: memo));
     }
     notifyListeners();
   }
 
-  void removeItem(FoodItem food) {
-    _items.removeWhere((item) => item.food.name == food.name);
+  void removeItem(CartItem target) {
+    _items.remove(target);
     notifyListeners();
   }
 
-  void updateQuantity(FoodItem food, int quantity) {
-    final index = _items.indexWhere((item) => item.food.name == food.name);
+  void updateQuantity(CartItem target, int quantity) {
+    final index = _items.indexOf(target);
     if (index >= 0 && quantity > 0) {
       _items[index].quantity = quantity;
       notifyListeners();
